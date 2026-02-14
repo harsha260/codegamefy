@@ -3,20 +3,20 @@
 ## 1. High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          CLIENTS                                     │
+┌────────────────────────────────────────────────────────────────────┐
+│                          CLIENTS                                   │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐                          │
 │  │ Web App  │  │ Spectator│  │  Admin   │                          │
 │  │ (Next.js)│  │  View    │  │  Panel   │                          │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘                          │
-│       │              │              │                                │
-│       └──────────────┼──────────────┘                                │
-│                      │                                               │
-│            ┌─────────▼──────────┐                                    │
-│            │   CDN / Edge       │  (Vercel / Cloudflare)             │
-│            │   (Static + SSR)   │                                    │
-│            └─────────┬──────────┘                                    │
-└──────────────────────┼──────────────────────────────────────────────┘
+│       │              │              │                              │
+│       └──────────────┼──────────────┘                              │
+│                      │                                             │
+│            ┌─────────▼──────────┐                                  │
+│            │   CDN / Edge       │  (Vercel / Cloudflare)           │
+│            │   (Static + SSR)   │                                  │
+│            └─────────┬──────────┘                                  │
+└──────────────────────┼─────────────────────────────────────────────┘
                        │
           ┌────────────▼────────────┐
           │     Load Balancer       │  (Nginx / AWS ALB)
@@ -32,23 +32,23 @@
                │               │
                └───────┬───────┘
                        │
-          ┌────────────▼────────────┐
-          │    Service Layer        │
-          │                         │
+          ┌────────────▼───────────┐
+          │    Service Layer       │
+          │                        │
           │  ┌─────┐ ┌──────────┐  │
           │  │Auth │ │Matchmaker│  │
           │  └─────┘ └──────────┘  │
           │  ┌─────┐ ┌──────────┐  │
           │  │ELO  │ │Sabotage  │  │
           │  └─────┘ └──────────┘  │
-          │  ┌─────┐ ┌──────────┐  │
+          │  ┌─────┐ ┌──────────┐  │ 
           │  │Clan │ │Spectator │  │
           │  └─────┘ └──────────┘  │
-          └────────────┬────────────┘
+          └────────────┬───────────┘
                        │
         ┌──────────────┼──────────────┐
         │              │              │
-   ┌────▼────┐  ┌─────▼─────┐  ┌────▼────┐
+   ┌────▼─────┐  ┌─────▼─────┐  ┌────▼────┐
    │PostgreSQL│  │   Redis   │  │  Judge  │
    │  (Data)  │  │(State/Pub)│  │ Service │
    │          │  │           │  │(Docker) │
@@ -97,7 +97,7 @@
 ### 3.1 WebSocket Gateway Architecture
 
 ```
-┌─────────────────────────────────────────────┐
+┌──────────────────────────────────────────────┐
 │              Socket.io Server                │
 │                                              │
 │  Namespaces:                                 │
@@ -115,7 +115,7 @@
 │  Scaling:                                    │
 │  └── @socket.io/redis-adapter                │
 │      (Redis Pub/Sub for multi-instance)      │
-└─────────────────────────────────────────────┘
+└──────────────────────────────────────────────┘
 ```
 
 **Key Events (Match Namespace):**
@@ -136,14 +136,14 @@
 Player clicks "Find Match"
         │
         ▼
-┌───────────────────┐
+┌────────────────────┐
 │  Matchmaking Queue │  (Redis Sorted Set, scored by ELO)
 │  Key: mm:{mode}    │
-└────────┬──────────┘
+└────────┬───────────┘
          │
          ▼
-┌───────────────────────────────────┐
-│  Matchmaker Worker (runs every 2s)│
+┌────────────────────────────────────┐
+│  Matchmaker Worker (runs every 2s) │
 │                                    │
 │  1. Pop players from queue         │
 │  2. Group by ELO proximity         │
@@ -151,7 +151,7 @@ Player clicks "Find Match"
 │  3. Create match room in Redis     │
 │  4. Emit "match:found" via WS      │
 │  5. Insert Match record in Postgres│
-└───────────────────────────────────┘
+└────────────────────────────────────┘
 ```
 
 **ELO Proximity Expansion:** If a player waits >30s, the acceptable ELO range expands by 50 points every 10s. This prevents high-ELO players from waiting indefinitely.
@@ -162,9 +162,9 @@ Player clicks "Find Match"
 ┌──────────────────────────────────────────────┐
 │              Judge Service                    │
 │                                               │
-│  ┌─────────────┐    ┌──────────────────────┐ │
+│  ┌─────────────┐     ┌──────────────────────┐ │
 │  │ BullMQ Queue│───▶│  Executor Worker     │ │
-│  │ (Redis)     │    │                      │ │
+│  │ (Redis)     │    │                       │ │
 │  └─────────────┘    │  1. Pull job          │ │
 │                     │  2. Select language    │ │
 │                     │     config             │ │
@@ -176,16 +176,16 @@ Player clicks "Find Match"
 │                     │     resource limits    │ │
 │                     │  6. Compare output     │ │
 │                     │  7. Return verdict     │ │
-│                     └──────────────────────┘ │
+│                     └────────────────────────┘ │
 │                                               │
 │  Security Layers:                             │
 │  ├── seccomp profile (syscall whitelist)      │
-│  ├── cgroups v2 (CPU: 1 core, RAM: 256MB)    │
+│  ├── cgroups v2 (CPU: 1 core, RAM: 256MB)     │
 │  ├── no network access (--network=none)       │
 │  ├── read-only filesystem (except /tmp)       │
 │  ├── execution timeout (10s hard kill)        │
 │  └── PID limit (64 processes max)             │
-└──────────────────────────────────────────────┘
+└───────────────────────────────────────────────┘
 ```
 
 **Language Configuration Example (C++):**
@@ -237,7 +237,7 @@ TTL: 2 hours (auto-cleanup)
 ### 4.1 State Management Strategy
 
 ```
-┌─────────────────────────────────────────┐
+┌──────────────────────────────────────────┐
 │              Client State                │
 │                                          │
 │  Zustand Stores:                         │
@@ -257,7 +257,7 @@ TTL: 2 hours (auto-cleanup)
 │  ├── Match events → matchStore           │
 │  ├── Queue position → uiStore            │
 │  └── Spectator feed → matchStore         │
-└─────────────────────────────────────────┘
+└──────────────────────────────────────────┘
 ```
 
 ### 4.2 "Juicy" Game Feel Implementation
@@ -361,25 +361,25 @@ const GameEditor = ({ matchId, problemId }: Props) => {
                            │
               ┌────────────┼────────────┐
               │            │            │
-        ┌─────▼─────┐┌────▼─────┐┌────▼─────┐
-        │  API + WS  ││  API + WS ││  API + WS │
+        ┌─────▼─────┐┌────▼─────┐┌────▼─────────┐
+        │  API + WS  ││  API + WS ││  API + WS  │
         │ Instance 1 ││ Instance 2 ││ Instance 3│
-        └─────┬──────┘└────┬──────┘└────┬──────┘
+        └─────┬──────┘└────┬──────┘└────┬───────┘
               │            │            │
               └────────────┼────────────┘
                            │
-                    ┌──────▼──────┐
+                    ┌──────▼───────┐
                     │ Redis Cluster│
                     │ (Pub/Sub +   │
                     │  State)      │
-                    └──────┬──────┘
+                    └──────┬───────┘
                            │
-                    ┌──────▼──────┐
+                    ┌──────▼───────┐
                     │  PostgreSQL  │
                     │  (Primary +  │
                     │   Read       │
                     │   Replicas)  │
-                    └─────────────┘
+                    └──────────────┘
 ```
 
 **Key Scaling Decisions:**
