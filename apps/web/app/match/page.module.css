@@ -1,0 +1,518 @@
+.main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Match Header ─── */
+.matchHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background-color: #111827;
+  border-bottom: 1px solid #1f2937;
+}
+
+.matchMode {
+  font-weight: 600;
+  color: #6366f1;
+}
+
+.timer {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+.timerWarning {
+  color: #ef4444;
+  animation: pulse-red 0.5s ease-in-out infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { color: #ef4444; }
+  50% { color: #fca5a5; }
+}
+
+.scores {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.playerScore {
+  text-align: center;
+}
+
+.playerScoreName {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.playerScoreValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.you {
+  color: #6366f1;
+}
+
+.opponent {
+  color: #ef4444;
+}
+
+/* ─── Main Content ─── */
+.content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ─── Problem Panel ─── */
+.problemPanel {
+  width: 40%;
+  padding: 1.5rem;
+  overflow-y: auto;
+  border-right: 1px solid #1f2937;
+}
+
+.problemTabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.problemTab {
+  padding: 0.375rem 0.75rem;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 0.375rem;
+  color: #9ca3af;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.problemTab:hover {
+  border-color: #6b7280;
+}
+
+.problemTabActive {
+  background-color: #6366f1;
+  border-color: #6366f1;
+  color: #ffffff;
+}
+
+.problemTabLocked {
+  background-color: #991b1b;
+  border-color: #991b1b;
+  color: #fca5a5;
+  cursor: not-allowed;
+}
+
+.problemTabSolved {
+  background-color: #065f46;
+  border-color: #065f46;
+  color: #6ee7b7;
+}
+
+.problemTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.problemDifficulty {
+  font-size: 0.8125rem;
+  margin-bottom: 1rem;
+}
+
+.diffEasy { color: #10b981; }
+.diffMedium { color: #f59e0b; }
+.diffHard { color: #ef4444; }
+
+.problemDesc {
+  color: #d1d5db;
+  line-height: 1.7;
+  font-size: 0.9375rem;
+}
+
+.problemDesc code {
+  background-color: #1f2937;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.exampleBlock {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #0d1117;
+  border: 1px solid #1f2937;
+  border-radius: 0.5rem;
+}
+
+.exampleLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  margin-bottom: 0.375rem;
+}
+
+.exampleContent {
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: #e5e7eb;
+  white-space: pre;
+}
+
+/* ─── Editor Panel ─── */
+.editorPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.editorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background-color: #0d1117;
+  border-bottom: 1px solid #1f2937;
+}
+
+.langSelect {
+  padding: 0.25rem 0.5rem;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 0.25rem;
+  color: #d1d5db;
+  font-size: 0.8125rem;
+}
+
+.editorArea {
+  flex: 1;
+  position: relative;
+}
+
+.textarea {
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  background-color: #0d1117;
+  color: #e5e7eb;
+  border: none;
+  resize: none;
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  outline: none;
+  tab-size: 4;
+}
+
+.textarea::placeholder {
+  color: #4b5563;
+}
+
+/* ─── Bottom Bar ─── */
+.bottomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: #111827;
+  border-top: 1px solid #1f2937;
+}
+
+.testResults {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.testDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #374151;
+}
+
+.testPass {
+  background-color: #10b981;
+}
+
+.testFail {
+  background-color: #ef4444;
+}
+
+.testLabel {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.runBtn {
+  padding: 0.5rem 1rem;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 0.375rem;
+  color: #d1d5db;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.runBtn:hover {
+  border-color: #6b7280;
+}
+
+.submitBtn {
+  padding: 0.5rem 1.25rem;
+  background-color: #059669;
+  border: none;
+  border-radius: 0.375rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitBtn:hover {
+  background-color: #10b981;
+}
+
+/* ─── Output Panel ─── */
+.outputPanel {
+  padding: 0.75rem 1rem;
+  background-color: #0d1117;
+  border-top: 1px solid #1f2937;
+  max-height: 10rem;
+  overflow-y: auto;
+}
+
+.outputTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  margin-bottom: 0.375rem;
+}
+
+.outputContent {
+  font-family: monospace;
+  font-size: 0.8125rem;
+  color: #d1d5db;
+  white-space: pre-wrap;
+}
+
+.outputSuccess {
+  color: #10b981;
+}
+
+.outputError {
+  color: #ef4444;
+}
+
+/* ─── Verdict Animation ─── */
+.verdictOverlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(3, 7, 18, 0.8);
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.verdictCard {
+  text-align: center;
+  padding: 3rem;
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.verdictIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.verdictText {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.verdictAccepted {
+  color: #10b981;
+}
+
+.verdictWrong {
+  color: #ef4444;
+}
+
+/* ─── Game Over Screen ─── */
+.gameOverOverlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(3, 7, 18, 0.95);
+  z-index: 200;
+  animation: fadeIn 0.5s ease;
+}
+
+.gameOverCard {
+  text-align: center;
+  padding: 3rem;
+  background-color: #111827;
+  border: 2px solid #1f2937;
+  border-radius: 1rem;
+  max-width: 32rem;
+  width: 100%;
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gameOverTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.gameOverWin {
+  color: #10b981;
+}
+
+.gameOverLose {
+  color: #ef4444;
+}
+
+.gameOverDraw {
+  color: #f59e0b;
+}
+
+.gameOverSubtitle {
+  color: #9ca3af;
+  margin-bottom: 2rem;
+  font-size: 1.125rem;
+}
+
+.gameOverScores {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+.gameOverPlayer {
+  text-align: center;
+}
+
+.gameOverPlayerName {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-bottom: 0.25rem;
+}
+
+.gameOverPlayerScore {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.gameOverStats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.gameOverStat {
+  text-align: center;
+}
+
+.gameOverStatValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #d1d5db;
+}
+
+.gameOverStatLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.eloChange {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.eloUp {
+  color: #10b981;
+}
+
+.eloDown {
+  color: #ef4444;
+}
+
+.gameOverActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.rematchBtn {
+  padding: 0.75rem 1.5rem;
+  background-color: #4f46e5;
+  border: none;
+  border-radius: 0.5rem;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.rematchBtn:hover {
+  background-color: #6366f1;
+}
+
+.backBtn {
+  padding: 0.75rem 1.5rem;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+  color: #d1d5db;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  text-decoration: none;
+}
+
+.backBtn:hover {
+  border-color: #6b7280;
+}

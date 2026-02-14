@@ -1,0 +1,355 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// USER & AUTHENTICATION
+// ─────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  username      String    @unique @db.VarChar(32)
+  email         String    @unique @db.VarChar(255)
+  passwordHash  String?
+  avatarUrl     String?
+  class         UserClass @default(NONE)
+  title         String?   @db.VarChar(64)
+  country       String?   @db.VarChar(2)
+
+  githubId      String?   @unique
+  googleId      String?   @unique
+
+  eloRating     EloRating?
+  eloHistory    EloHistory[]
+  submissions   Submission[]
+  matchPlayers  MatchPlayer[]
+  clanMember    ClanMember?
+  createdProblems Problem[] @relation("ProblemAuthor")
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastActiveAt  DateTime  @default(now())
+
+  @@index([username])
+  @@index([lastActiveAt])
+}
+
+enum UserClass {
+  NONE
+  ARCHITECT
+  BUG_HUNTER
+  SPEEDRUNNER
+  OPTIMIZER
+  SABOTEUR
+}
+
+// ─────────────────────────────────────────────
+// ELO RATING (Skill Polygon — Glicko-2)
+// ─────────────────────────────────────────────
+
+model EloRating {
+  id              String  @id @default(cuid())
+  userId          String  @unique
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  algoRating      Float   @default(1500)
+  algoDeviation   Float   @default(350)
+  algoVolatility  Float   @default(0.06)
+
+  debugRating     Float   @default(1500)
+  debugDeviation  Float   @default(350)
+  debugVolatility Float   @default(0.06)
+
+  optRating       Float   @default(1500)
+  optDeviation    Float   @default(350)
+  optVolatility   Float   @default(0.06)
+
+  speedRating     Float   @default(1500)
+  speedDeviation  Float   @default(350)
+  speedVolatility Float   @default(0.06)
+
+  compositeRating Float   @default(1500)
+
+  algoMatchCount  Int     @default(0)
+  debugMatchCount Int     @default(0)
+  optMatchCount   Int     @default(0)
+  speedMatchCount Int     @default(0)
+
+  updatedAt       DateTime @updatedAt
+
+  @@index([compositeRating])
+  @@index([algoRating])
+  @@index([speedRating])
+}
+
+model EloHistory {
+  id                String       @id @default(cuid())
+  userId            String
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  matchId           String
+  match             Match        @relation(fields: [matchId], references: [id])
+
+  dimension         EloDimension
+  ratingBefore      Float
+  ratingAfter       Float
+  deviationBefore   Float
+  deviationAfter    Float
+
+  createdAt         DateTime     @default(now())
+
+  @@index([userId, createdAt])
+  @@index([matchId])
+}
+
+enum EloDimension {
+  ALGORITHMS
+  DEBUGGING
+  OPTIMIZATION
+  SPEED
+}
+
+// ─────────────────────────────────────────────
+// PROBLEMS
+// ─────────────────────────────────────────────
+
+model Problem {
+  id              String     @id @default(cuid())
+  slug            String     @unique @db.VarChar(128)
+  title           String     @db.VarChar(256)
+  description     String     @db.Text
+  difficulty      Difficulty
+  category        EloDimension
+  tags            String[]
+
+  timeLimit       Int        @default(2000)
+  memoryLimit     Int        @default(256)
+
+  testCases       TestCase[]
+
+  isCodeGolf      Boolean    @default(false)
+
+  sabotageCode    String?    @db.Text
+  sabotageLanguage String?   @db.VarChar(16)
+
+  authorId        String?
+  author          User?      @relation("ProblemAuthor", fields: [authorId], references: [id])
+  solveCount      Int        @default(0)
+  attemptCount    Int        @default(0)
+  avgSolveTime    Float?
+
+  submissions     Submission[]
+  matchProblems   MatchProblem[]
+
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([difficulty, category])
+  @@index([slug])
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  EXTREME
+}
+
+model TestCase {
+  id              String  @id @default(cuid())
+  problemId       String
+  problem         Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  input           String  @db.Text
+  expectedOutput  String  @db.Text
+  isHidden        Boolean @default(true)
+  isSample        Boolean @default(false)
+  order           Int
+
+  @@index([problemId, order])
+}
+
+// ─────────────────────────────────────────────
+// MATCHES
+// ─────────────────────────────────────────────
+
+model Match {
+  id                    String      @id @default(cuid())
+  mode                  GameMode
+  status                MatchStatus @default(WAITING)
+
+  scheduledAt           DateTime?
+  startedAt             DateTime?
+  endedAt               DateTime?
+  duration              Int
+
+  eliminationInterval   Int?
+  currentRound          Int?        @default(1)
+
+  players               MatchPlayer[]
+  problems              MatchProblem[]
+  submissions           Submission[]
+  eloHistory            EloHistory[]
+
+  createdAt             DateTime    @default(now())
+
+  @@index([mode, status])
+  @@index([startedAt])
+}
+
+enum GameMode {
+  BLITZ_1V1
+  CODE_GOLF
+  BATTLE_ROYALE
+  SABOTAGE
+}
+
+enum MatchStatus {
+  WAITING
+  STARTING
+  ACTIVE
+  FINISHED
+  CANCELLED
+}
+
+model MatchPlayer {
+  id              String        @id @default(cuid())
+  matchId         String
+  match           Match         @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+
+  score           Int           @default(0)
+  rank            Int?
+  isEliminated    Boolean       @default(false)
+  eliminatedAt    DateTime?
+
+  sabotageRole    SabotageRole?
+  sabotageCode    String?       @db.Text
+
+  joinedAt        DateTime      @default(now())
+
+  @@unique([matchId, userId])
+  @@index([userId])
+  @@index([matchId, score])
+}
+
+enum SabotageRole {
+  SABOTEUR
+  DEBUGGER
+}
+
+model MatchProblem {
+  id              String    @id @default(cuid())
+  matchId         String
+  match           Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  problemId       String
+  problem         Problem   @relation(fields: [problemId], references: [id])
+
+  points          Int
+  order           Int
+
+  lockedByUserId  String?
+  lockedAt        DateTime?
+
+  @@unique([matchId, problemId])
+  @@index([matchId, order])
+}
+
+// ─────────────────────────────────────────────
+// SUBMISSIONS
+// ─────────────────────────────────────────────
+
+model Submission {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  problemId       String
+  problem         Problem   @relation(fields: [problemId], references: [id])
+  matchId         String?
+  match           Match?    @relation(fields: [matchId], references: [id])
+
+  code            String    @db.Text
+  language        String    @db.VarChar(16)
+  codeLength      Int?
+
+  verdict         Verdict   @default(PENDING)
+  runtime         Int?
+  memory          Int?
+
+  testResults     Json?
+  passedTests     Int       @default(0)
+  totalTests      Int       @default(0)
+
+  submittedAt     DateTime  @default(now())
+  judgedAt        DateTime?
+
+  @@index([userId, problemId])
+  @@index([matchId, userId])
+  @@index([submittedAt])
+}
+
+enum Verdict {
+  PENDING
+  ACCEPTED
+  WRONG_ANSWER
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
+  RUNTIME_ERROR
+  COMPILATION_ERROR
+}
+
+// ─────────────────────────────────────────────
+// CLANS / GUILDS
+// ─────────────────────────────────────────────
+
+model Clan {
+  id              String       @id @default(cuid())
+  name            String       @unique @db.VarChar(64)
+  tag             String       @unique @db.VarChar(6)
+  description     String?      @db.Text
+  avatarUrl       String?
+  bannerUrl       String?
+
+  weeklyScore     Int          @default(0)
+  weeklyRank      Int?
+  allTimeScore    Int          @default(0)
+
+  maxMembers      Int          @default(50)
+
+  members         ClanMember[]
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([weeklyScore(sort: Desc)])
+  @@index([tag])
+}
+
+model ClanMember {
+  id                String   @id @default(cuid())
+  clanId            String
+  clan              Clan     @relation(fields: [clanId], references: [id], onDelete: Cascade)
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id])
+
+  role              ClanRole @default(MEMBER)
+  contributedScore  Int      @default(0)
+
+  joinedAt          DateTime @default(now())
+
+  @@index([clanId, role])
+}
+
+enum ClanRole {
+  LEADER
+  OFFICER
+  MEMBER
+}

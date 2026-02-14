@@ -1,0 +1,7 @@
+/* ─── Layout ─── */
+.body {
+  background-color: #030712;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

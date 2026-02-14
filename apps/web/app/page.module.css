@@ -1,0 +1,151 @@
+/* ─── Hero Section ─── */
+.main {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
+.heroContainer {
+  text-align: center;
+  max-width: 56rem;
+}
+
+.title {
+  font-size: 3.75rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.titleGradient {
+  background: linear-gradient(to right, #6366f1, #22d3ee, #f59e0b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tagline {
+  font-size: 1.5rem;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-bottom: 3rem;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── CTA Buttons ─── */
+.ctaContainer {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
+.ctaPrimary {
+  padding: 0.75rem 2rem;
+  background-color: #4f46e5;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: background-color 0.2s;
+  color: white;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.ctaPrimary:hover {
+  background-color: #6366f1;
+}
+
+.ctaSecondary {
+  padding: 0.75rem 2rem;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: background-color 0.2s;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ctaSecondary:hover {
+  background-color: #374151;
+}
+
+/* ─── Game Mode Cards Grid ─── */
+.modesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .modesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .modesGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ─── Game Mode Card ─── */
+.card {
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #1f2937;
+  transition: border-color 0.2s;
+  cursor: pointer;
+  text-align: left;
+}
+
+.card:hover {
+  border-color: #4b5563;
+}
+
+.cardBlitz {
+  background: linear-gradient(to bottom, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.05));
+}
+
+.cardGolf {
+  background: linear-gradient(to bottom, rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0.05));
+}
+
+.cardRoyale {
+  background: linear-gradient(to bottom, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05));
+}
+
+.cardSabotage {
+  background: linear-gradient(to bottom, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.05));
+}
+
+.cardIcon {
+  font-size: 1.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.cardDescription {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}

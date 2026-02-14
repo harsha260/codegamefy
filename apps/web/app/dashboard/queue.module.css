@@ -1,0 +1,148 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(3, 7, 18, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.queueCard {
+  text-align: center;
+  padding: 3rem;
+  background-color: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 1rem;
+  max-width: 24rem;
+  width: 100%;
+}
+
+.queueIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.queueTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.queueMode {
+  color: #6366f1;
+  font-weight: 600;
+}
+
+.queueTimer {
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin: 1.5rem 0;
+  color: #d1d5db;
+}
+
+.queueStatus {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #1f2937;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.cancelBtn {
+  padding: 0.5rem 1.5rem;
+  background-color: transparent;
+  border: 1px solid #374151;
+  border-radius: 0.375rem;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.cancelBtn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* ─── Match Found ─── */
+.foundCard {
+  text-align: center;
+  padding: 3rem;
+  background-color: #111827;
+  border: 2px solid #6366f1;
+  border-radius: 1rem;
+  max-width: 28rem;
+  width: 100%;
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.foundTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #10b981;
+  margin-bottom: 1rem;
+}
+
+.vsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.playerCard {
+  text-align: center;
+}
+
+.playerName {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.playerElo {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+}
+
+.vsText {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ef4444;
+}
+
+.enterBtn {
+  padding: 0.75rem 2rem;
+  background-color: #4f46e5;
+  border: none;
+  border-radius: 0.5rem;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.enterBtn:hover {
+  background-color: #6366f1;
+}
